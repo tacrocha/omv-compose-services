@@ -1,0 +1,24 @@
+name: transmission
+
+services:
+  transmission-openvpn:
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - "/srv/dev-disk-by-uuid-4d893db5-fd24-4af8-9ffe-44f1b97882e2/transmission-data:/data"
+      - "transmission-config:/config"
+    environment:
+      - OPENVPN_PROVIDER=PIA
+      - OPENVPN_CONFIG=us_new_york
+      - LOCAL_NETWORK=192.168.1.0/24
+      - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    ports:
+      - "9091:9091"
+    image: haugene/transmission-openvpn
+volumes:
+  transmission-config:
