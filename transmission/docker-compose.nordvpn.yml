@@ -1,0 +1,28 @@
+services:
+  transmission-openvpn:
+    privileged: true
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - "/docker-data/media:/data"
+      - "transmission-config:/config"
+    environment:
+      - OPENVPN_PROVIDER=NORDVPN
+      - NORDVPN_COUNTRY=ca
+      - NORDVPN_CATEGORY=legacy_p2p
+      - OPENVPN_USERNAME=${NORDVPN_SERVICE_USERNAME}
+      - OPENVPN_PASSWORD=${NORDVPN_SERVICE_PASSWORD}
+      - LOCAL_NETWORK=192.168.1.0/24
+      - TRANSMISSION_RPC_USERNAME=admin
+      - TRANSMISSION_RPC_PASSWORD=${TRANSMISSION_RPC_PASSWORD}
+      - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=true
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    ports:
+      - "9091:9091"
+    image: haugene/transmission-openvpn
+volumes:
+  transmission-config:
